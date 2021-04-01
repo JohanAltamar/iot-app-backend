@@ -1,4 +1,6 @@
 import express, { Application } from "express";
+import cors from 'cors';
+
 import userRoutes from "../routes/users";
 import dbConnection from "../database/config";
 import env from "../env.config";
@@ -17,12 +19,20 @@ class Server {
     // Start database connection
     this.connectDatabase();
 
+    // Middlewares
+    this.middlewares();
+
     // Routes Definition
     this.routes();
   }
 
   async connectDatabase() {
     await dbConnection();
+  }
+
+  middlewares(){
+    this.app.use(cors());
+    this.app.use(express.json());
   }
 
   routes() {

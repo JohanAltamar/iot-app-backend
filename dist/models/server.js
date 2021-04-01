@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../routes/users"));
 const config_1 = __importDefault(require("../database/config"));
 const env_config_1 = __importDefault(require("../env.config"));
@@ -25,6 +26,8 @@ class Server {
         this.port = env_config_1.default.PORT || "3000";
         // Start database connection
         this.connectDatabase();
+        // Middlewares
+        this.middlewares();
         // Routes Definition
         this.routes();
     }
@@ -32,6 +35,10 @@ class Server {
         return __awaiter(this, void 0, void 0, function* () {
             yield config_1.default();
         });
+    }
+    middlewares() {
+        this.app.use(cors_1.default());
+        this.app.use(express_1.default.json());
     }
     routes() {
         this.app.use(this.apiRoutes.users, users_1.default);
