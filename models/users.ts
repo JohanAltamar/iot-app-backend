@@ -1,0 +1,22 @@
+import { Schema, model } from "mongoose";
+
+const userSchema = new Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    password: { type: String, required: true },
+    sessionTokens: { type: Array, of: String, default: [] },
+    deviceTokens: { type: String, default: "" },
+    group: { type: Schema.Types.ObjectId, ref: "Group" },
+    role: {
+      type: String,
+      enum: ["ADMIN_ROLE", "USER_ROLE", "SUPER_ADMIN_ROLE"],
+      default: "USER_ROLE",
+    },
+    status: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+
+const User = model("User", userSchema);
+
+export default User;
