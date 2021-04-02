@@ -1,20 +1,26 @@
-import express, { Application } from "express";
-import cors from 'cors';
+import express from "express";
+import cors from "cors";
+import * as http from "http";
+import SocketIO from "socket.io";
 
 import userRoutes from "../routes/users";
 import dbConnection from "../database/config";
 import env from "../env.config";
 
-class Server {
-  private app: Application;
+class IoTServer {
   private port: string;
+  private app: express.Application;
   private apiRoutes = {
     users: "/api/users",
   };
+  private http: http.Server;
+  private io: SocketIO.Server;
 
   constructor() {
     this.app = express();
     this.port = env.PORT || "3000";
+    this.http = http.createServer(this.app);
+    this.io = require("socket.io")(this.http, { origins: "*:*" });
 
     // Start database connection
     this.connectDatabase();
@@ -30,7 +36,7 @@ class Server {
     await dbConnection();
   }
 
-  middlewares(){
+  middlewares() {
     this.app.use(cors());
     this.app.use(express.json());
   }
@@ -40,10 +46,13 @@ class Server {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
+    this.http.listen(this.port, () => {
       console.log(`Server running on htpp://localhost:${this.port}`);
+    });
+    this.io.on("connect", () => {
+      console.log("User connected");
     });
   }
 }
 
-export default Server;
+export default IoTServer;
