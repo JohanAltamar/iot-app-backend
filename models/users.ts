@@ -14,7 +14,16 @@ const userSchema = new Schema(
     },
     status: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform: (doc, ret) => {
+        const { _id, __v, sessionTokens, password, ...rest } = ret;
+        rest.id = _id;
+        return rest;
+      },
+    },
+  }
 );
 
 const User = model("User", userSchema);
