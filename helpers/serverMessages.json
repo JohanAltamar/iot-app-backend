@@ -1,4 +1,7 @@
 {
+  "re-authenticate": {
+    "msg": "re-authenticate"
+  },
   "wrong-credential": {
     "msg": "email / password are not correct"
   }
