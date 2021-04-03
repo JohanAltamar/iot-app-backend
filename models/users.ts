@@ -3,10 +3,11 @@ import { IUser } from "../interfaces";
 
 const userSchema = new Schema(
   {
-    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, trim: true, lowercase: true },
+    name:  { type: String, required: true, trim: true, lowercase: true },
     password: { type: String, required: true },
     sessionTokens: { type: Array, of: String, default: [] },
-    deviceTokens: { type: String, default: "" },
+    deviceTokens:  { type: String, default: "" },
     group: { type: Schema.Types.ObjectId, ref: "Group" },
     role: {
       type: String,
@@ -20,7 +21,7 @@ const userSchema = new Schema(
     toJSON: {
       transform: (doc, ret) => {
         const { _id, __v, sessionTokens, password, ...rest } = ret;
-        rest.id = _id;
+        rest.uid = _id;
         return rest;
       },
     },
