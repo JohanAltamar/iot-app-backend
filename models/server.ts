@@ -3,6 +3,7 @@ import cors from "cors";
 import * as http from "http";
 import SocketIO from "socket.io";
 
+import authRoutes from "../routes/auth";
 import userRoutes from "../routes/users";
 import dbConnection from "../database/config";
 import env from "../env.config";
@@ -11,6 +12,7 @@ class IoTServer {
   private port: string;
   private app: express.Application;
   private apiRoutes = {
+    auth: "/api/auth",
     users: "/api/users",
   };
   private http: http.Server;
@@ -42,6 +44,7 @@ class IoTServer {
   }
 
   routes() {
+    this.app.use(this.apiRoutes.auth, authRoutes);
     this.app.use(this.apiRoutes.users, userRoutes);
   }
 
