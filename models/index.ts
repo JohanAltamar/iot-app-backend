@@ -1,5 +1,7 @@
-import User from './users';
+import Group from "./groups";
+import User from "./users";
 
-export {
-  User,
-}
+export { 
+  Group, 
+  User, 
+};
