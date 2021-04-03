@@ -1,0 +1,5 @@
+{
+  "wrong-credential": {
+    "msg": "email / password are not correct"
+  }
+}
