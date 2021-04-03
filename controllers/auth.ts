@@ -10,20 +10,36 @@ export const login = async (req: Request, res: Response) => {
     const { body } = req;
     const { email, password } = body;
 
+    // FOUND USER BY EMAIL
     const foundUser = await User.findOne({ email });
 
+    // CHECK IF NO USER WAS FOUND
     if (!foundUser) {
       return res.status(401).json(msg["wrong-credential"]);
     }
 
+    // CHECK IF GIVEN AND DATABASE PASSWORDS MATCH
     const matchedPasswords = compareSync(password, foundUser.password);
-    if (matchedPasswords) {
-      // generate token
-      const token = await tokens.generateSessionToken({ uid: foundUser._id });
-      res.json({ sessionToken: token });
-    } else {
-      res.status(401).json(msg["wrong-credential"]);
+    if (!matchedPasswords) {
+      return res.status(401).json(msg["wrong-credential"]);
     }
+
+    // generate session token
+    const token = await tokens.generateSessionToken({ uid: foundUser._id });
+    res.json({ sessionToken: token });
+  } catch (error) {
+    errorLogs.logger(error, res);
+  }
+};
+
+export const newDeviceToken = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const { uid, group } = user;
+
+    // GENERATE DEVICE TOKEN
+    const devicesToken = await tokens.generateDeviceToken({ uid, group });
+    res.json({ devicesToken });
   } catch (error) {
     errorLogs.logger(error, res);
   }
