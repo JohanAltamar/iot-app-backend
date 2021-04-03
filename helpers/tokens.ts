@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 
 import env from "../env.config";
-import { ITokenPayload } from "../interfaces";
-import { User } from "../models";
+import { IDeviceTokenPayload, ITokenPayload } from "../interfaces";
+import { Group, User } from "../models";
 
-export const generateDeviceToken = async (payload: ITokenPayload) => {
+export const generateDeviceToken = async (payload: IDeviceTokenPayload) => {
   const token = jwt.sign(payload, env.SECRET_SESSION_KEY);
-  await User.findByIdAndUpdate(payload.uid, { deviceTokens: token });
+  await Group.findByIdAndUpdate(payload.group, { devicesToken: token });
   return token;
 };
 
@@ -32,8 +32,8 @@ export const removeSessionToken = async (uid: string, token: string) => {
   });
 };
 
-export const resetDeviceToken = async (uid: string) => {
-  await User.findByIdAndUpdate(uid, { deviceTokens: "" });
+export const resetDeviceToken = async (groupID: string) => {
+  await Group.findByIdAndUpdate(groupID, { devicesToken: "" });
 };
 
 export const resetSessionTokens = async (uid: string) => {
