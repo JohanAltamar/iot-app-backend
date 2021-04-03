@@ -7,4 +7,5 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 export default {
   PORT: process.env.PORT ?? "",
   MONGODB_ATLAS: process.env.MONGODB_ATLAS ?? "",
+  SECRET_SESSION_KEY: process.env.SECRET_SESSION_KEY ?? "",
 };
