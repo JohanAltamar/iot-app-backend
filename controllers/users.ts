@@ -13,7 +13,7 @@ export const createUser = async (req: Request, res: Response) => {
     body.password = hashSync(body.password, salt); // Encrypt password
 
     // CREATE NEW USER OBJECT
-    const newUser = new User({ ...body, user });
+    const newUser = new User({ ...body, user: user._id });
     await newUser.save();
 
     res.json(newUser);
