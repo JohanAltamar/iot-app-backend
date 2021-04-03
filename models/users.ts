@@ -7,7 +7,6 @@ const userSchema = new Schema(
     name:  { type: String, required: true, trim: true, lowercase: true },
     password: { type: String, required: true },
     sessionTokens: { type: Array, of: String, default: [] },
-    deviceTokens:  { type: String, default: "" },
     group: { type: Schema.Types.ObjectId, ref: "Group" },
     role: {
       type: String,
@@ -15,6 +14,7 @@ const userSchema = new Schema(
       default: "USER_ROLE",
     },
     status: { type: Boolean, default: true },
+    user:   { type: Schema.Types.ObjectId, ref: "User" }
   },
   {
     timestamps: true,
