@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, newDeviceToken } from "../controllers/auth";
+import { login, logout, newDeviceToken } from "../controllers/auth";
 import { hasRole } from "../middlewares/roles";
 import { validateSessionToken } from "../middlewares/tokens";
 
@@ -11,6 +11,12 @@ const router = Router();
  * email required and valid, password required
  */
 router.post("/login", login);
+
+/**
+ * USER LOGOUT ROUTE
+ * Protected route
+ */
+router.post("/logout", [validateSessionToken], logout)
 
 /**
  * CREATE A NEW GROUP DEVICES TOKEN ROUTE

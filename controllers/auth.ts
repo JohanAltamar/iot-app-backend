@@ -4,6 +4,7 @@ import { compareSync } from "bcryptjs";
 import { User } from "../models";
 import { errorLogs, tokens } from "../helpers";
 import msg from "../helpers/serverMessages.json";
+import { removeSessionToken } from "../helpers/tokens";
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -29,6 +30,19 @@ export const login = async (req: Request, res: Response) => {
     res.json({ sessionToken: token });
   } catch (error) {
     errorLogs.logger(error, res);
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const token:string = req.header("x-session-key") || "";
+    await removeSessionToken(user._id, token)
+    res.json({
+      msg: "user logout"
+    })
+  } catch (error) {
+    errorLogs.logger(error, res)
   }
 };
 
