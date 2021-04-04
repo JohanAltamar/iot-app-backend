@@ -32,3 +32,10 @@ export const getUsers = async (req: Request, res: Response) => {
     errorLogs.logger(error, res);
   }
 };
+
+export const getSelfUserInfo = (req: Request, res: Response) => {
+  const user = req.user;
+  res.json({
+    results: user ? [user] : [],
+  });
+};
