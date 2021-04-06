@@ -4,6 +4,8 @@ import * as http from "http";
 import SocketIO from "socket.io";
 
 import authRoutes from "../routes/auth";
+import deviceRoutes from "../routes/devices";
+import roomRoutes from "../routes/rooms";
 import userRoutes from "../routes/users";
 import dbConnection from "../database/config";
 import env from "../env.config";
@@ -13,6 +15,8 @@ class IoTServer {
   private app: express.Application;
   private apiRoutes = {
     auth: "/api/auth",
+    devices: "/api/devices",
+    rooms: "/api/rooms",
     users: "/api/users",
   };
   private http: http.Server;
@@ -45,6 +49,8 @@ class IoTServer {
 
   routes() {
     this.app.use(this.apiRoutes.auth, authRoutes);
+    this.app.use(this.apiRoutes.devices, deviceRoutes);
+    this.app.use(this.apiRoutes.rooms, roomRoutes);
     this.app.use(this.apiRoutes.users, userRoutes);
   }
 
@@ -52,8 +58,14 @@ class IoTServer {
     this.http.listen(this.port, () => {
       console.log(`Server running on htpp://localhost:${this.port}`);
     });
-    this.io.on("connect", () => {
-      console.log("User connected");
+
+    // WHEN USER CONNECTS, ADD IT TO THE PROVIDED ROOMS
+    this.io.on("connect", (socket) => {
+      const rooms = socket.handshake.auth.devicesIDs;
+      console.log("User connected, rooms:", socket.handshake.auth.devicesIDs);
+      rooms.forEach((room: string) => {
+        socket.join(room);
+      });
     });
   }
 }
