@@ -1,10 +1,11 @@
 import SocketIO from "socket.io";
 import * as http from "http";
+import { validateDeviceToken } from "../helpers/tokens";
 
 interface IPayload {
-  deviceID:     string;
-  deviceToken:  string;
-  value:        any;
+  deviceID: string;
+  deviceToken: string;
+  value: any;
 }
 
 class SocketsServer {
@@ -26,9 +27,12 @@ class SocketsServer {
     });
   }
 
-  sendMessage(data: IPayload) {
+  async sendMessage(data: IPayload) {
     const { deviceToken, ...rest } = data;
-    this.io.to(data.deviceID).emit("message", rest);
+    const validToken = await validateDeviceToken(deviceToken, rest.deviceID);
+    if (validToken) {
+      this.io.to(data.deviceID).emit("message", rest);
+    }
   }
 }
 
